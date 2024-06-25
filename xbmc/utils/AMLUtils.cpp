@@ -448,7 +448,7 @@ bool aml_get_native_resolution(RESOLUTION_INFO *res)
 
   if (aml_has_frac_rate_policy())
   {
-    int fractional_rate;
+    int fractional_rate = 0;
     CSysfsPath frac_rate_policy{"/sys/class/amhdmitx/amhdmitx0/frac_rate_policy"};
     if (frac_rate_policy.Exists())
       fractional_rate = frac_rate_policy.Get<int>().value();

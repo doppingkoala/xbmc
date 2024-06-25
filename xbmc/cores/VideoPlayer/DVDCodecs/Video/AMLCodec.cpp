@@ -2348,7 +2348,7 @@ void CAMLCodec::Reset()
   SetPollDevice(-1);
 
   // set the system blackout_policy to leave the last frame showing
-  int blackout_policy;
+  int blackout_policy = 0;
   CSysfsPath video_blackout_policy{"/sys/class/video/blackout_policy"};
   if (video_blackout_policy.Exists())
   {
