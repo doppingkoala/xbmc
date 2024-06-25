@@ -79,7 +79,7 @@ std::string CPlayerGUIInfo::GetAMLConfigInfo(std::string item) const
 
           if (sub_items.size() > 1)
           {
-            int cur_fractional_rate;
+            int cur_fractional_rate = 0;
             item_value = StringUtils::Left(sub_items.at(1), sub_items.at(1).length() - 4) + " ";
 
             CSysfsPath frac_rate_policy{"/sys/class/amhdmitx/amhdmitx0/frac_rate_policy"};
