@@ -1570,8 +1570,6 @@ bool CBitstreamConverter::h264_sequence_header(const uint8_t *data, const uint32
     unsigned int frame_crop_bottom_offset = 0;
     unsigned int sar_width = 0;
     unsigned int sar_height = 0;
-    uint32_t unitsInTick = 0;
-    uint32_t timeScale = 0;
 
     int lastScale;
     int nextScale;
@@ -1721,8 +1719,8 @@ bool CBitstreamConverter::h264_sequence_header(const uint8_t *data, const uint32
 
                 if (nal_bs_read(&bs, 1)) //timing_info_present_flag
                 {
-                    unitsInTick = nal_bs_read(&bs, 32); //num_units_in_tick
-                    timeScale = nal_bs_read(&bs, 32); //time_scale
+                    nal_bs_read(&bs, 32); //num_units_in_tick
+                    nal_bs_read(&bs, 32); //time_scale
                     nal_bs_read(&bs, 1); // fixed rate
                 }
             }
