@@ -49,9 +49,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_BUILD_VARS()
 
-  if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
-    set(PCRE2_USE_STATIC_LIBS ON)
-  endif()
+  set(PCRE2_USE_STATIC_LIBS ON)
 
   # Check for existing PCRE2. If version >= PCRE2-VERSION file version, dont build
   find_package(PCRE2 CONFIG COMPONENTS 8BIT QUIET)
