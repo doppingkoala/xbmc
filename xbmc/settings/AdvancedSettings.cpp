@@ -781,6 +781,23 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
         pRefreshVideoLatency = pRefreshVideoLatency->NextSiblingElement("refresh");
       }
 
+      TiXmlElement* pResolutionVideoLatency = pVideoLatency->FirstChildElement("resolution");
+
+      while (pResolutionVideoLatency)
+      {
+        ResolutionVideoLatency videolatency = {};
+
+        if (XMLUtils::GetString(pResolutionVideoLatency,"strId", videolatency.strId))
+        {
+          XMLUtils::GetFloat(pResolutionVideoLatency, "delay", videolatency.delay, -600.0f, 600.0f);
+          XMLUtils::GetFloat(pResolutionVideoLatency, "hdrextradelay", videolatency.hdrextradelay,
+                             -600.0f, 600.0f);
+          m_videoResolutionLatency.push_back(videolatency);
+        }
+
+        pResolutionVideoLatency = pResolutionVideoLatency->NextSiblingElement("resolution");
+      }
+
       // Get default global display latency values
       XMLUtils::GetFloat(pVideoLatency, "delay", m_videoDefaultLatency, -600.0f, 600.0f);
       XMLUtils::GetFloat(pVideoLatency, "hdrextradelay", m_videoDefaultHdrExtraLatency, -600.0f,
@@ -1410,6 +1427,29 @@ float CAdvancedSettings::GetLatencyTweak(float refreshrate, bool isHDREnabled)
                    { return refreshrate >= param.refreshmin && refreshrate <= param.refreshmax; });
 
   if (latency != m_videoRefreshLatency.cend()) //refresh rate specific setting is found
+  {
+    delay = latency->delay == 0.0f ? m_videoDefaultLatency : latency->delay;
+    if (isHDREnabled)
+      delay +=
+          latency->hdrextradelay == 0.0f ? m_videoDefaultHdrExtraLatency : latency->hdrextradelay;
+  }
+  else //apply default delay settings
+  {
+    delay = isHDREnabled ? m_videoDefaultLatency + m_videoDefaultHdrExtraLatency
+                         : m_videoDefaultLatency;
+  }
+  return delay; // in milliseconds
+}
+
+float CAdvancedSettings::GetLatencyTweak(const std::string resolution, bool isHDREnabled)
+{
+  float delay{};
+  const auto& latency =
+      std::find_if(m_videoResolutionLatency.cbegin(), m_videoResolutionLatency.cend(),
+                   [resolution](const auto& param)
+                   { return StringUtils::EqualsNoCase(resolution, param.strId); });
+
+  if (latency != m_videoResolutionLatency.cend()) //refresh rate specific setting is found
   {
     delay = latency->delay == 0.0f ? m_videoDefaultLatency : latency->delay;
     if (isHDREnabled)

@@ -98,6 +98,14 @@ struct RefreshVideoLatency
   float hdrextradelay;
 };
 
+struct ResolutionVideoLatency
+{
+  std::string strId;
+
+  float delay;
+  float hdrextradelay;
+};
+
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
 class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
@@ -164,6 +172,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float m_videoAutoScaleMaxFps;
     std::vector<RefreshOverride> m_videoAdjustRefreshOverrides;
     std::vector<RefreshVideoLatency> m_videoRefreshLatency;
+    std::vector<ResolutionVideoLatency> m_videoResolutionLatency;
     float m_videoDefaultLatency;
     float m_videoDefaultHdrExtraLatency;
     int  m_videoCaptureUseOcclusionQuery;
@@ -351,6 +360,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void ParseSettingsFile(const std::string &file);
 
     float GetLatencyTweak(float refreshrate, bool isHDREnabled);
+    float GetLatencyTweak(const std::string resolution, bool isHDREnabled);
     bool m_initialized;
 
     void SetDebugMode(bool debug);
