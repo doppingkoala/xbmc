@@ -778,6 +778,24 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
         pRefreshVideoLatency = pRefreshVideoLatency->NextSiblingElement("refresh");
       }
 
+      TiXmlElement* pResolutionVideoLatency = pVideoLatency->FirstChildElement("resolution");
+
+      while (pResolutionVideoLatency)
+      {
+        ResolutionVideoLatency videolatency = {};
+
+        if (XMLUtils::GetString(pResolutionVideoLatency,"strId", videolatency.strId))
+        {
+          if (XMLUtils::GetFloat(pResolutionVideoLatency, "delay", delay, -600.0f, 600.0f))
+          {
+            videolatency.delay = delay;
+            m_videoResolutionLatency.push_back(videolatency);
+          }
+        }
+
+        pResolutionVideoLatency = pResolutionVideoLatency->NextSiblingElement("resolution");
+      }
+
       // Get default global display latency
       XMLUtils::GetFloat(pVideoLatency, "delay", m_videoDefaultLatency, -600.0f, 600.0f);
     }
@@ -1399,6 +1417,19 @@ float CAdvancedSettings::GetLatencyTweak(float refreshrate)
   {
     RefreshVideoLatency& videolatency = m_videoRefreshLatency[i];
     if (refreshrate >= videolatency.refreshmin && refreshrate <= videolatency.refreshmax)
+      delay = videolatency.delay;
+  }
+
+  return delay; // in milliseconds
+}
+
+float CAdvancedSettings::GetLatencyTweak(const std::string resolution)
+{
+  float delay = m_videoDefaultLatency;
+  for (int i = 0; i < (int) m_videoResolutionLatency.size(); i++)
+  {
+    ResolutionVideoLatency& videolatency = m_videoResolutionLatency[i];
+    if (StringUtils::EqualsNoCase(resolution, videolatency.strId))
       delay = videolatency.delay;
   }
 
