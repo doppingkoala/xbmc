@@ -907,6 +907,10 @@ void CRenderManager::UpdateLatencyTweak()
   m_latencyTweak = static_cast<double>(
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetLatencyTweak(refresh,
                                                                                      isHDREnabled));
+  RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+  m_latencyTweak = static_cast<double>(
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetLatencyTweak(resInfo.strId,
+                                                                                     isHDREnabled));
 }
 
 void CRenderManager::UpdateResolution()
